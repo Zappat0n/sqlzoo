@@ -66,3 +66,13 @@ SELECT continent, name, area FROM world x WHERE area >= ALL (SELECT area FROM wo
 SELECT continent, name FROM world x WHERE name <= ALL (SELECT name FROM world y WHERE y.continent=x.continent);
 SELECT name, continent, population FROM world x WHERE 25000000 > ALL(SELECT population FROM world y WHERE y.continent=x.continent AND y.population > 0);
 SELECT name, continent FROM world x WHERE population > ALL(SELECT population * 3 FROM world y WHERE y.continent=x.continent AND y.population > 0 AND x.name != y.name);
+
+-- 5 SUM and COUNT
+SELECT SUM(population) FROM world;
+SELECT DISTINCT(continent) FROM world;
+SELECT SUM(gdp) FROM world WHERE continent = 'Africa';
+SELECT COUNT(area) FROM world WHERE area > 1000000;
+SELECT SUM(population) FROM world WHERE name IN ('Estonia', 'Latvia', 'Lithuania');
+SELECT continent, COUNT(name) FROM world GROUP BY continent;
+SELECT continent, COUNT(name) FROM world WHERE population > 10000000 GROUP BY continent;
+SELECT continent FROM world GROUP BY continent HAVING SUM(population) > 100000000;
