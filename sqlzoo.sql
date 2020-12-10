@@ -124,3 +124,15 @@ SELECT teacher.name, COALESCE(dept.name, 'None') FROM teacher LEFT JOIN dept ON 
 SELECT COUNT(name), COUNT(mobile) FROM teacher;
 SELECT dept.name, COUNT(teacher.name) FROM teacher RIGHT JOIN dept ON teacher.dept = dept.id WHERE dept.name IS NOT NULL GROUP BY dept.name;
 SELECT teacher.name, (CASE WHEN dept=1 OR dept=2 THEN 'Sci' WHEN dept=3 THEN 'Art' ELSE 'None' END) FROM teacher;
+
+-- 8+ Numeric Examples
+SELECT A_STRONGLY_AGREE FROM nss WHERE question='Q01' AND institution='Edinburgh Napier University' AND subject='(8) Computer Science';
+SELECT institution, subject FROM nss WHERE question='Q15' AND A_AGREE + A_STRONGLY_AGREE >= 100;
+SELECT institution,score FROM nss WHERE question='Q15' AND score < 50 AND subject='(8) Computer Science';
+SELECT subject, SUM(response) FROM nss WHERE question='Q22' AND (subject='(8) Computer Science' OR subject='(H) Creative Arts and Design') GROUP BY subject;
+SELECT subject, SUM(response * A_STRONGLY_AGREE) / 100 FROM nss WHERE question='Q22' AND (subject='(8) Computer Science' OR subject='(H) Creative Arts and Design') GROUP BY subject;
+SELECT subject, ROUND(SUM(response * A_STRONGLY_AGREE) / SUM(response)) FROM nss
+  WHERE question='Q22' AND (subject='(8) Computer Science' OR subject='(H) Creative Arts and Design') GROUP BY subject;
+SELECT institution, ROUND(SUM(response * score) / SUM(response)) FROM nss WHERE question='Q22' AND institution LIKE '%Manchester%' GROUP BY institution;
+SELECT institution, SUM(sample), SUM((CASE WHEN subject = '(8) Computer Science' THEN sample ELSE 0 END)) FROM nss
+  WHERE (institution LIKE '%Manchester%') AND question = 'Q01' GROUP BY institution;
