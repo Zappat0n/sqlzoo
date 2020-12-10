@@ -136,3 +136,13 @@ SELECT subject, ROUND(SUM(response * A_STRONGLY_AGREE) / SUM(response)) FROM nss
 SELECT institution, ROUND(SUM(response * score) / SUM(response)) FROM nss WHERE question='Q22' AND institution LIKE '%Manchester%' GROUP BY institution;
 SELECT institution, SUM(sample), SUM((CASE WHEN subject = '(8) Computer Science' THEN sample ELSE 0 END)) FROM nss
   WHERE (institution LIKE '%Manchester%') AND question = 'Q01' GROUP BY institution;
+
+-- 9- Window function
+SELECT lastName, party, votes FROM ge WHERE constituency = 'S14000024' AND yr = 2017 ORDER BY votes DESC;
+SELECT party, votes, RANK() OVER (ORDER BY votes DESC) as posn FROM ge WHERE constituency = 'S14000024' AND yr = 2017 ORDER BY party;
+SELECT constituency,party, votes, RANK() OVER (PARTITION BY constituency ORDER BY votes DESC) as posn FROM ge
+  WHERE constituency BETWEEN 'S14000021' AND 'S14000026' AND yr  = 2017 ORDER BY posn, constituency;
+SELECT constituency, party FROM (SELECT *, RANK() OVER (PARTITION BY constituency ORDER BY votes DESC) as posn FROM ge WHERE constituency BETWEEN 'S14000021' AND 'S14000026' AND yr  = 2017) t
+  WHERE constituency BETWEEN 'S14000021' AND 'S14000026' AND yr  = 2017 AND posn = 1 ORDER BY constituency;
+SELECT party, COUNT(1) FROM (SELECT *, RANK() OVER (PARTITION BY constituency ORDER BY votes DESC) as posn FROM ge WHERE constituency LIKE 'S%' AND yr  = 2017) t
+ WHERE constituency LIKE 'S%' AND yr  = 2017 AND posn = 1 GROUP BY party ORDER BY party;
